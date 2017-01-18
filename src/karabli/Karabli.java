@@ -410,10 +410,11 @@ public class Karabli extends JFrame
         private MyVictoriFrame m;
         private String bot = "PC";
         private String player = "Player";
-        private int top = 1;
-        private int bottom = 2;
-        private int left = 3;
-        private int rigch = 4;
+        private int top = 11;
+        private int bottom = 11;
+        private int left = 1;
+        private int rigch = 1;
+        private boolean botFlag = true;
         
         
         public ActionButton() 
@@ -506,16 +507,53 @@ public class Karabli extends JFrame
         }
         private void logicShotBot(int tempIndex)
         {
-            if(! jbcPanelTwo.get(tempIndex + top).getStateButtonMiss() && (jbcPanelTwo.get(tempIndex + top).getStateButton()))
-            {
-                jbcPanelTwo.get(tempIndex + top).setBrokenShip();
-                logicShotBot(tempIndex + top);
-            }else
-            {
-                jbcPanelTwo.get(tempIndex + top).setMiss();
-            }
+            int tempindex = tempIndex;
+            
+            
         }
-
+        private int getNaprovlenie(int indx)
+        {
+            if(botFlag)
+            {
+                if(!jbcPanelTwo.get(index - top).getStateButtonMiss())
+                {
+                    botFlag = false;
+                    return index - top;
+                }else if(!jbcPanelTwo.get(index + bottom).getStateButtonMiss())
+                {
+                    botFlag = false;
+                    return index + bottom;
+                }else if(!jbcPanelTwo.get(index - left).getStateButtonMiss())
+                {
+                    botFlag = false;
+                    return index - left;
+                }else if(!jbcPanelTwo.get(index + rigch).getStateButtonMiss())
+                {
+                    botFlag = false;
+                    return index + rigch;
+                }
+            }else if(!botFlag)
+            {
+                if(jbcPanelTwo.get(index - top).getStateButtonBrokenShip())
+                {
+                    botFlag = true;
+                    return index + bottom;
+                }else if(jbcPanelTwo.get(index + bottom).getStateButtonBrokenShip())
+                {
+                    botFlag = true;
+                    return index - top;
+                }else if(jbcPanelTwo.get(index - left).getStateButtonBrokenShip())
+                {
+                    botFlag = true;
+                    return index + rigch;
+                }else if(jbcPanelTwo.get(index + rigch).getStateButtonBrokenShip())
+                {
+                    botFlag = true;
+                    return index - left;
+                }
+            }
+           return 1; 
+        }
         private int trueInt()
         {
             random = r.nextInt(110) + 11;

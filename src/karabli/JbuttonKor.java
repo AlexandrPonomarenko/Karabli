@@ -52,10 +52,8 @@ public class JbuttonKor
                 break;
                 
             case SHIP:
-                
                 btn.setBackground(Color.WHITE);
-                //btn.setEnabled(false);
-                setEnabledButton();
+                btn.setEnabled(false);
                 btn.setIcon(new ImageIcon("ship-front-view.png"));
                 break;
             
