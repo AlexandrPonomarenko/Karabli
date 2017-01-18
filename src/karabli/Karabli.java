@@ -425,9 +425,9 @@ public class Karabli extends JFrame
         @Override
         public void actionPerformed(ActionEvent e) 
         {
-            if(!stateBot)
+            if(colBot.size() == 0)
             {
-                JOptionPane.showMessageDialog(Karabli.this, "Нужно установить карабли");
+                JOptionPane.showMessageDialog(Karabli.this, "Set Ship");
             }
             JButton b;
             b = (JButton)e.getSource();

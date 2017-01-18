@@ -52,8 +52,10 @@ public class JbuttonKor
                 break;
                 
             case SHIP:
+                
                 btn.setBackground(Color.WHITE);
-                btn.setEnabled(false);
+                //btn.setEnabled(false);
+                setEnabledButton();
                 btn.setIcon(new ImageIcon("ship-front-view.png"));
                 break;
             
@@ -120,6 +122,11 @@ public class JbuttonKor
         changeState(State.FIXED);
     }
     
+    public void setEnabledButton()
+    {
+        btn.setEnabled(false);
+        btn.setBackground(Color.WHITE);
+    }
     public void setSeaButtonEn()
     {
         changeState(State.SEA);
