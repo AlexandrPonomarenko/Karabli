@@ -400,13 +400,14 @@ public class Karabli extends JFrame
     }
     public class ActionButton implements ActionListener
     {
+        private int flagVizovaMetoda = 0;
         private int index = 0;
         private int botBrokShip = 0;
         private int gamerBrokShip = 0;
         private boolean state = true;
         private Random r = new Random();
         private int random;
-        private int tempIndex;
+        private int firstTempIndex;
         private MyVictoriFrame m;
         private String bot = "PC";
         private String player = "Player";
@@ -414,8 +415,11 @@ public class Karabli extends JFrame
         private int bottom = 11;
         private int left = 1;
         private int rigch = 1;
-        private boolean botFlag = true;
-        
+        private boolean lastShot = false;
+        private int naprTop = 0;
+        private int naprBottom = 0;
+        private int naprLeft = 0;
+        private int naprRigch = 0;
         
         public ActionButton() 
         {
@@ -455,10 +459,34 @@ public class Karabli extends JFrame
                 //proVictori(player);
                 shot(index);
             }else if(!state)
-            {
-                //offAll();
-                shotBot(trueInt());
+            { 
+                if(lastShot)
+                {
+                    botRight();
+                }else {shotBot(trueInt());}
+                //shotBot(trueInt());
             }
+        }
+        
+        public void botRight()
+        {
+            if(!lastShot) 
+            {
+                //firstTempIndex = 0;
+                shotBot(trueInt()); // гасим рандомно и записываем lastShoot
+            } else 
+            {
+                if(flagVizovaMetoda > 1)
+                {
+                    setNaprovlenitShoting();
+                }
+                shotBot(getNaprovlenie(firstTempIndex));
+                //тут гасим по кораблю и записываем lastShoot
+            }
+            
+//            if (lastShoot == корбль) {
+//                botRight()
+//            }
         }
         
         public void shot(int index)
@@ -486,7 +514,8 @@ public class Karabli extends JFrame
         {
             if(jbcPanelTwo.get(index).getStateButton())
             {
-                tempIndex = index;
+                lastShot = true;
+                firstTempIndex = index;
                 state = false;
                 jbcPanelTwo.get(index).setBrokenShip();
         
@@ -500,58 +529,97 @@ public class Karabli extends JFrame
                 //shotBot(trueInt());
             }else
             {
+                naprTop = 0;
+                naprBottom = 0;
+                naprLeft = 0;
+                naprRigch = 0;
+                lastShot = false;
                 state = true;
                 jbcPanelTwo.get(index).setMiss();
-                //onAll();
+                
             }
         }
-        private void logicShotBot(int tempIndex)
+        
+        private void setNaprovlenitShoting()
         {
-            int tempindex = tempIndex;
-            
-            
+            if(naprTop > 0)
+            {
+                shotBot(getShotTopBot(firstTempIndex));
+            }else if(naprBottom > 0)
+            {
+                shotBot(getShotBottomBot(firstTempIndex));
+            }else if(naprLeft > 0)
+            {
+                shotBot(getShotLeftBot(firstTempIndex));
+            }else if(naprRigch > 0)
+            {
+                shotBot(getShotRightBot(firstTempIndex));
+            }
         }
+        
+        private int getShotTopBot(int firstindex)
+        {
+            if(!jbcPanelTwo.get(firstindex - top).getStateButtonMiss())
+            {
+                return firstindex - top;
+            }
+            return 0;
+        }
+        
+        private int getShotBottomBot(int firstindex)
+        {
+            if(!jbcPanelTwo.get(firstindex + bottom).getStateButtonMiss())
+            {
+                return firstindex + top;
+            }
+            return 0;
+        }
+        
+        private int getShotLeftBot(int firstindex)
+        {
+            if(!jbcPanelTwo.get(firstindex - left).getStateButtonMiss())
+            {
+                return firstindex - left;
+            }
+            return 0;
+        }
+        
+        private int getShotRightBot(int firstindex)
+        {
+            if(!jbcPanelTwo.get(firstindex + rigch).getStateButtonMiss())
+            {
+                return firstindex + rigch;
+            }
+            return 0;
+        }
+        
         private int getNaprovlenie(int indx)
         {
-            if(botFlag)
+            if(!jbcPanelTwo.get(index - top).getStateButtonBrokenShip() && 
+                    !jbcPanelTwo.get(index - bottom).getStateButtonBrokenShip() &&
+                    !jbcPanelTwo.get(index - left).getStateButtonBrokenShip() &&
+                    !jbcPanelTwo.get(index - rigch).getStateButtonBrokenShip())
             {
-                if(!jbcPanelTwo.get(index - top).getStateButtonMiss())
-                {
-                    botFlag = false;
-                    return index - top;
-                }else if(!jbcPanelTwo.get(index + bottom).getStateButtonMiss())
-                {
-                    botFlag = false;
-                    return index + bottom;
-                }else if(!jbcPanelTwo.get(index - left).getStateButtonMiss())
-                {
-                    botFlag = false;
-                    return index - left;
-                }else if(!jbcPanelTwo.get(index + rigch).getStateButtonMiss())
-                {
-                    botFlag = false;
-                    return index + rigch;
-                }
-            }else if(!botFlag)
-            {
-                if(jbcPanelTwo.get(index - top).getStateButtonBrokenShip())
-                {
-                    botFlag = true;
-                    return index + bottom;
-                }else if(jbcPanelTwo.get(index + bottom).getStateButtonBrokenShip())
-                {
-                    botFlag = true;
-                    return index - top;
-                }else if(jbcPanelTwo.get(index - left).getStateButtonBrokenShip())
-                {
-                    botFlag = true;
-                    return index + rigch;
-                }else if(jbcPanelTwo.get(index + rigch).getStateButtonBrokenShip())
-                {
-                    botFlag = true;
-                    return index - left;
-                }
+                //вызвать метод расставления промохов вокруг корабля
             }
+            if(!jbcPanelTwo.get(index - top).getStateButtonMiss())
+            {
+                naprTop = 1;
+                return index - top;
+            }else if(!jbcPanelTwo.get(index + bottom).getStateButtonMiss())
+            {
+                naprBottom = 1;
+                return index + bottom;
+            }else if(!jbcPanelTwo.get(index - left).getStateButtonMiss())
+            {
+                naprLeft = 1;
+                return index - left;
+            }else if(!jbcPanelTwo.get(index + rigch).getStateButtonMiss())
+            {
+                naprRigch = 1;
+                return index + rigch;
+            }
+            
            return 1; 
         }
         private int trueInt()
